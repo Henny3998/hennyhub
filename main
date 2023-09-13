@@ -1,0 +1,155 @@
+local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
+
+local Window = Rayfield:CreateWindow({
+    Name = "HENNY HUB",
+    LoadingTitle = "HENNY HUB",
+    LoadingSubtitle = "by HENNY3998",
+    ConfigurationSaving = {
+       Enabled = true,
+       FolderName = nil, -- Create a custom folder for your hub/game
+       FileName = ""
+    },
+    Discord = {
+       Enabled = true,
+       Invite = "KDG9SQ5Szk", -- The Discord invite code, do not include discord.gg/. E.g. discord.gg/ABCD would be ABCD
+       RememberJoins = true -- Set this to false to make them join the discord every time they load it up
+    },
+    KeySystem = true, -- Set this to true to use our key system
+    KeySettings = {
+       Title = "Key",
+       Subtitle = "Key System",
+       Note = "join the discord for updates on the script",
+       FileName = "Key", -- It is recommended to use something unique as other scripts using Rayfield may overwrite your key file
+       SaveKey = true, -- The user's key will be saved, but if you change the key, they will be unable to use your script
+       GrabKeyFromSite = true, -- If this is true, set Key below to the RAW site you would like Rayfield to get the key from
+       Key = {"https://pastebin.com/raw/fFur8iTN"} -- List of keys that will be accepted by the system, can be RAW file links (pastebin, github etc) or simple strings ("hello","key22")
+    }
+ })
+ local Tab = Window:CreateTab("Main", nil) -- Title, Image
+     local Section = Tab:CreateSection("Main")
+ 
+     local Slider = Tab:CreateSlider({
+        Name = "WalkSpeed",
+        Range = {0, 300},
+        Increment = 1,
+        Suffix = "Speed",
+        CurrentValue = 16,
+        Flag = "Slider1", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
+        Callback = function(Value)
+            game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = Value
+        -- The function that takes place when the slider changes
+        -- The variable (Value) is a number which correlates to the value the slider is currently at
+        end,
+     })
+
+     local Slider = Tab:CreateSlider({
+      Name = "JumpPower",
+      Range = {0, 300},
+      Increment = 1,
+      Suffix = "Jump",
+      CurrentValue = 32,
+      Flag = "Slider1", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
+      Callback = function(Value)
+          game.Players.LocalPlayer.Character.Humanoid.JumpSpeed = Value
+      -- The function that takes place when the slider changes
+      -- The variable (Value) is a number which correlates to the value the slider is currently at
+      end,
+   })
+
+   local Button = Tab:CreateButton({
+      Name = "Chat Spy",
+      Callback = function()
+         --[[
+	Simple Chat Spy
+	Type "spy" to enable or disable the chat spy.
+	Only tested if this works executed with Synapse (should work with other exploits though)
+--]]
+
+print("-- Chat Spy Executed --")
+print("Type \"spy\" to enable or disable the chat spy.")
+print("Only tested if this works executed with Synapse (should work with other exploits though)")
+print("https://github.com/dehoisted/Chat-Spy")
+
+-- Config
+Config = {
+	enabled = true,
+	spyOnMyself = true,
+	public = false,
+	publicItalics = true
+}
+
+-- Customizing Log Output
+PrivateProperties = {
+	Color = Color3.fromRGB(0,255,255); 
+	Font = Enum.Font.SourceSansBold;
+	TextSize = 18;
+}
+
+	local StarterGui = game:GetService("StarterGui")
+	local Players = game:GetService("Players")
+	local player = Players.LocalPlayer
+	local saymsg = game:GetService("ReplicatedStorage"):WaitForChild("DefaultChatSystemChatEvents"):WaitForChild("SayMessageRequest")
+	local getmsg = game:GetService("ReplicatedStorage"):WaitForChild("DefaultChatSystemChatEvents"):WaitForChild("OnMessageDoneFiltering")
+	local instance = (_G.chatSpyInstance or 0) + 1
+	_G.chatSpyInstance = instance
+
+	local function onChatted(p,msg)
+		if _G.chatSpyInstance == instance then
+			if p==player and msg:lower():sub(1,4)=="/spy" then
+				Config.enabled = not Config.enabled
+				wait(0.3)
+				PrivateProperties.Text = "{SPY "..(Config.enabled and "EN" or "DIS").."ABLED}"
+				StarterGui:SetCore("ChatMakeSystemMessage", PrivateProperties)
+			elseif Config.enabled and (Config.spyOnMyself==true or p~=player) then
+				msg = msg:gsub("[\n\r]",''):gsub("\t",' '):gsub("[ ]+",' ')
+				local hidden = true
+				local conn = getmsg.OnClientEvent:Connect(function(packet,channel)
+					if packet.SpeakerUserId==p.UserId and packet.Message==msg:sub(#msg-#packet.Message+1) and (channel=="All" or (channel=="Team" and Config.public==false and Players[packet.FromSpeaker].Team==player.Team)) then
+						hidden = false
+					end
+				end)
+				wait(1)
+				conn:Disconnect()
+				if hidden and Config.enabled then
+					if Config.public then
+						saymsg:FireServer((Config.publicItalics and "/me " or '').."{SPY} [".. p.Name .."]: "..msg,"All")
+					else
+						PrivateProperties.Text = "{SPY} [".. p.Name .."]: "..msg
+						StarterGui:SetCore("ChatMakeSystemMessage", PrivateProperties)
+					end
+				end
+			end
+		end
+	end
+	
+	for _,p in ipairs(Players:GetPlayers()) do
+		p.Chatted:Connect(function(msg) onChatted(p,msg) end)
+	end
+
+	Players.PlayerAdded:Connect(function(p)
+		p.Chatted:Connect(function(msg) onChatted(p,msg) end)
+	end)
+
+	PrivateProperties.Text = "{SPY "..(Config.enabled and "EN" or "DIS").."ABLED}"
+	StarterGui:SetCore("ChatMakeSystemMessage", PrivateProperties)
+	local chatFrame = player.PlayerGui.Chat.Frame
+	chatFrame.ChatChannelParentFrame.Visible = true
+	chatFrame.ChatBarParentFrame.Position = chatFrame.ChatChannelParentFrame.Position+UDim2.new(UDim.new(),chatFrame.ChatChannelParentFrame.Size.Y)
+      -- The function that takes place when the button is pressed
+      end,
+   })
+
+     Rayfield:Notify({
+      Title = "Discord server",
+      Content = "Make sure to join the discord server",
+      Duration = 5,
+      Image = ,
+      Actions = { -- Notification Buttons
+         Ignore = {
+            Name = "Okay!",
+            Callback = function()
+            print("The user tapped Okay!")
+         end
+      },
+   },
+   })
